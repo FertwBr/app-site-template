@@ -120,6 +120,9 @@ export async function loadPage(pageId, isInitialLoad = false) {
         await new Promise(resolve => setTimeout(resolve, 150));
         
         contentWrapper.innerHTML = tempDiv.innerHTML;
+
+        processMarkdownHeaders();
+        
         contentWrapper.classList.remove('fade-out');
 
         generateTOC(getUiString('pages.tocTitle'));
@@ -141,4 +144,26 @@ export async function loadPage(pageId, isInitialLoad = false) {
 
     createPageFabs(pageId);
     buildDynamicPanel();
+}
+
+function processMarkdownHeaders() {
+    const content = document.getElementById('content-wrapper');
+    if (!content) return;
+
+    const headers = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+    headers.forEach(header => {
+        const fullText = header.innerHTML;
+        const match = fullText.match(/{:\s*data-toc-key="([^"]+)"\s*}/);
+
+        if (match) {
+            const key = match[1];
+            const cleanHtml = fullText.replace(match[0], '').trim();
+
+            header.setAttribute('data-toc-key', key);
+
+            header.innerHTML = cleanHtml;
+        }
+    });
+    console.log("LOG: Cabeçalhos do Markdown processados para atributos customizados.");
 }
