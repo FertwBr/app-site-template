@@ -32,21 +32,30 @@ export function setupSheetScrollBehavior() {
     }, { passive: true });
 }
 
+export function scrollToElement(targetElement) {
+    if (!targetElement) {
+        console.warn("LOG: Tentativa de rolar para um elemento que não foi encontrado.");
+        return;
+    }
+    const topAppBarHeight = document.querySelector('md-top-app-bar')?.offsetHeight || 64;
+    const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - topAppBarHeight - 24;
+
+    window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+    });
+}
+
 function handleAnchorLink(anchorLink) {
     console.log(`LOG: Anchor link clicked: ${anchorLink.getAttribute('href')}`);
     const targetId = anchorLink.getAttribute('href').substring(1);
-    const targetElement = document.getElementById(targetId);
+    
+    const targetElement = document.querySelector(`[data-toc-key="${targetId}"]`) || document.getElementById(targetId);
 
     if (targetElement) {
-        const topAppBarHeight = document.querySelector('md-top-app-bar')?.offsetHeight || 64;
-        const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - topAppBarHeight - 24;
-        
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
+        scrollToElement(targetElement);
     } else {
-        console.warn(`LOG: Anchor target element with ID '${targetId}' not found.`);
+        console.warn(`LOG: Anchor target element with ID or key '${targetId}' not found.`);
     }
 }
 

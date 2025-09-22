@@ -680,3 +680,12 @@ div.hero-cta-buttons a {
     color: var(--md-sys-color-on-surface);
     font-weight: 500;
 }
+
+.markdown-body h1 > code,
+.markdown-body h2 > code,
+.markdown-body h3 > code,
+.markdown-body h4 > code,
+.markdown-body h5 > code,
+.markdown-body h6 > code {
+    display: none;
+}
