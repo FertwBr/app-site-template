@@ -1,7 +1,7 @@
 import '@material/web/all.js';
 import { setLanguage, loadPage } from './modules/core.js';
 import { setupTheme } from './modules/theme.js';
-import { buildNavigation, buildFooter, buildDynamicPanel, createBackToTopFab, buildThemeSelector, buildLanguageSelector } from './modules/dom-builder.js';
+import { buildNavigation, buildFooter, buildDynamicPanel, createBackToTopFab, buildThemeSelector, buildLanguageSelector, populateStaticContent} from './modules/dom-builder.js';
 import { setupNavigation, setupScrollBehavior, setupTopAppBarScrollBehavior, setupTitleClickListener, setupSheetScrollBehavior, setupThemeChooserEvents, setupLanguageChooserEvents } from './modules/events.js';
 
 document.addEventListener('DOMContentLoaded', initializeApp);
@@ -10,6 +10,8 @@ async function initializeApp() {
     console.log(`LOG: Initializing site for: ${window.config.appName}`);
 
     await setLanguage();
+
+    populateStaticContent(); 
 
     setupTheme();
     buildNavigation();

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Loading...</title>
+
+    <link rel="icon" href="art/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="art/favicon/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="art/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="art/favicon/site.webmanifest">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <script type="importmap">
+    {
+        "imports": {
+            "@material/web/": "https://esm.run/@material/web/",
+            "@material/material-color-utilities": "https://esm.run/@material/material-color-utilities",
+            "marked": "https://esm.run/marked"
+        }
+    }
+    </script>
+
+    <script src="config.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <md-top-app-bar>
+        <div slot="headline" class="app-title">
+            <img src="art/icon.svg" alt="App Icon" class="app-icon" id="app-icon-header">
+            <span class="title-text" id="app-title-header">App Name</span>
+        </div>
+    </md-top-app-bar>
+
+    <nav class="sidebar-nav">
+        <div class="custom-nav-rail"></div>
+        <md-navigation-drawer>
+            <md-list></md-list>
+        </md-navigation-drawer>
+        <div class="sidebar-footer">
+            <md-icon-button id="theme-rail-button" aria-label="Change theme color">
+                <md-icon>palette</md-icon>
+            </md-icon-button>
+            <md-icon-button id="lang-rail-button" aria-label="Change language">
+                <md-icon>language</md-icon>
+            </md-icon-button>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div id="main-content-area">
+            <main class="container">
+                <div id="content-container">
+                    <div id="content-wrapper"></div>
+                </div>
+            </main>
+            <aside id="dynamic-panel">
+                <div id="toc-container"></div>
+                <div id="panel-cards-container"></div>
+            </aside>
+        </div>
+
+        <footer class="page-footer">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="app-title">
+                        <img src="art/icon.svg" alt="App Icon" class="app-icon" id="app-icon-footer">
+                        <span class="md-typescale-title-medium" id="app-title-footer">App Name</span>
+                    </div>
+                    <p class="md-typescale-body-small" id="footer-app-description"></p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="md-typescale-title-small" id="footer-links-title"></h3>
+                    <ul class="footer-links"></ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="md-typescale-title-small" id="footer-connect-title"></h3>
+                    <ul class="footer-links-connect">
+                        <li><a href="https://github.com/fertwbr/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                        <li><a href="#" id="footer-support-link" target="_blank"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-line">
+                    <p class="md-typescale-body-small" id="footer-copyright"></p>
+                    <span id="site-version" class="md-typescale-label-small"></span>
+                </div>
+                <md-icon-button id="theme-picker-button-mobile" aria-label="Change theme color">
+                    <md-icon>palette</md-icon>
+                </md-icon-button>
+                <md-icon-button id="lang-picker-button-mobile" aria-label="Change language">
+                    <md-icon>language</md-icon>
+                </md-icon-button>
+            </div>
+        </footer>
+    </div>
+
+    <nav class="mobile-nav">
+        <div class="custom-nav-bar"></div>
+    </nav>
+
+    <div id="custom-sheet-menu" class="custom-sheet-menu">
+        <div class="sheet-content">
+            <md-list id="mobile-sheet-menu-list"></md-list>
+        </div>
+    </div>
+
+    <div class="fab-container"></div>
+    <div class="fab-container-left"></div>
+
+    <md-dialog id="theme-dialog" aria-labelledby="theme-dialog-title">
+        <div slot="headline" id="theme-dialog-title">Choose a Theme</div>
+        <div slot="content" id="theme-dialog-content"></div>
+        <div slot="actions">
+            <md-text-button id="theme-dialog-close-button" value="close">Close</md-text-button>
+        </div>
+    </md-dialog>
+
+    <md-dialog id="lang-dialog" aria-labelledby="lang-dialog-title">
+        <div slot="headline" id="lang-dialog-title">Choose a Language</div>
+        <div slot="content" id="lang-dialog-content"></div>
+        <div slot="actions">
+            <md-text-button id="lang-dialog-close-button" value="close">Close</md-text-button>
+        </div>
+    </md-dialog>
+
+</body>
+</html>
