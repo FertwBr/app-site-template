@@ -1,5 +1,15 @@
 import { getStringsForLang, loadStrings } from '../strings.js';
-import { createIndexLayout, createDefaultLayout, createShimmerHTML, updateActiveNav, createPageFabs, generateTOC, buildDynamicPanel, injectRoadmapSummary } from './dom-builder.js';
+import { 
+    createIndexLayout, 
+    createDefaultLayout, 
+    createShimmerHTML, 
+    updateActiveNav, 
+    createPageFabs, 
+    generateTOC, 
+    buildDynamicPanel, 
+    injectRoadmapSummary 
+} from './dom-builder.js';
+import { setupImageGallery, setupChangelogFilters } from './events.js';
 
 let currentLang = 'en';
 
@@ -18,25 +28,15 @@ export async function setLanguage() {
 
 export function getUiString(key) {
     const keys = key.split('.');
-    const strings = getStringsForLang(currentLang);
-    const fallbackStrings = getStringsForLang('en');
+    let result = getStringsForLang(currentLang);
+    let fallbackResult = getStringsForLang('en');
 
-    let result = strings;
     for (const k of keys) {
-        if (result === undefined) break;
-        result = result[k];
-    }
-
-    if (result === undefined) {
-        let fallbackResult = fallbackStrings;
-        for (const k of keys) {
-            if (fallbackResult === undefined) break;
-            fallbackResult = fallbackResult[k];
-        }
-        result = fallbackResult;
+        result = result?.[k];
+        fallbackResult = fallbackResult?.[k];
     }
     
-    return result === undefined ? `[${key}]` : result;
+    return result ?? fallbackResult ?? `[${key}]`;
 }
 
 async function getPageFile(pageId) {
@@ -72,24 +72,20 @@ export async function loadPage(pageId, isInitialLoad = false) {
     }
     
     const filePath = await getPageFile(pageId);
-
-    if (!filePath || !pageTitle) {
-        console.error(`LOG: Page configuration for '${pageId}' not found.`);
-        contentWrapper.innerHTML = `<div class="page-header"><h1 class="md-typescale-display-small">Page Not Found</h1></div>`;
+    if (!filePath) {
+        contentWrapper.innerHTML = `<p>Page not found.</p>`;
         return;
     }
 
     updateActiveNav(pageId);
     if (!isInitialLoad) {
         const url = new URL(window.location);
-        if (url.searchParams.get('page') !== pageId) {
-            url.searchParams.set('page', pageId);
-            window.history.pushState({ pageId }, document.title, url);
-        }
+        url.searchParams.set('page', pageId);
+        window.history.pushState({ pageId }, document.title, url);
     }
 
     contentWrapper.classList.add('fade-out');
-    if (document.body.contains(contentContainer) && contentContainer.offsetHeight > 0) {
+    if (contentContainer.offsetHeight > 0) {
         contentContainer.style.height = `${contentContainer.offsetHeight}px`;
     }
 
@@ -99,32 +95,26 @@ export async function loadPage(pageId, isInitialLoad = false) {
     window.scrollTo(0, 0);
     contentWrapper.classList.remove('fade-out');
     
-    if (document.body.contains(contentContainer)) {
+    if (contentContainer.offsetHeight > 0) {
         contentContainer.style.height = `${contentWrapper.offsetHeight}px`;
     }
 
     try {
         const response = await fetch(filePath);
-        if (!response.ok) throw new Error(`Fetch failed for ${filePath} with status ${response.status}`);
+        if (!response.ok) throw new Error(`Fetch failed for ${filePath}`);
         const markdown = await response.text();
 
         const tempDiv = document.createElement('div');
         tempDiv.style.visibility = 'hidden';
         tempDiv.style.position = 'absolute';
         
-        if (pageId === 'index') {
-            tempDiv.innerHTML = await createIndexLayout(markdown);
-        } else {
-            tempDiv.innerHTML = await createDefaultLayout(markdown, pageId);
-        }
+        tempDiv.innerHTML = (pageId === 'index')
+            ? await createIndexLayout(markdown)
+            : await createDefaultLayout(markdown, pageId);
         
         document.body.appendChild(tempDiv);
-        const newHeight = tempDiv.offsetHeight;
+        contentContainer.style.height = `${tempDiv.offsetHeight}px`;
         document.body.removeChild(tempDiv);
-
-        if (document.body.contains(contentContainer)) {
-            contentContainer.style.height = `${newHeight}px`;
-        }
 
         contentWrapper.classList.add('fade-out');
         await new Promise(resolve => setTimeout(resolve, 150));
@@ -134,16 +124,13 @@ export async function loadPage(pageId, isInitialLoad = false) {
 
         generateTOC(getUiString('pages.tocTitle'));
         
-        if (pageId === 'index' || pageId === 'plus') window.setupImageGallery?.();
-        if (pageId === 'changelog') window.setupChangelogFilters?.();
-
-        if (pageId === 'index' || pageId === 'overview') {
-            await injectRoadmapSummary();
-        }
+        if (pageId === 'index' || pageId === 'plus') setupImageGallery();
+        if (pageId === 'changelog') setupChangelogFilters();
+        if (pageId === 'index' || pageId === 'overview') await injectRoadmapSummary();
 
     } catch (error) {
-        console.error(`LOG: Fatal error loading content for page '${pageId}'.`, error);
-        contentWrapper.innerHTML = `<div class="page-header"><h1 class="md-typescale-display-small">Oops!</h1><p>Error loading content.</p></div>`;
+        console.error(`Error loading content for page '${pageId}'.`, error);
+        contentWrapper.innerHTML = `<p>Error loading content.</p>`;
     } finally {
         setTimeout(() => {
             if (document.body.contains(contentContainer)) {
