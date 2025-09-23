@@ -1,10 +1,8 @@
 import { themeFromSourceColor, applyTheme } from '@material/material-color-utilities';
 import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
 
-// Dynamic storage key prefix
 const THEME_STORAGE_KEY_PREFIX = 'app-site-theme-color-';
 
-// Helper to get the storage key per app
 function getStorageKey() {
     return `${THEME_STORAGE_KEY_PREFIX}${window.config.appName.toLowerCase().replace(/\s+/g, '-')}`;
 }
