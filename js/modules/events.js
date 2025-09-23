@@ -1,5 +1,5 @@
 import { loadPage, getUiString, setLanguage } from './core.js';
-import { updateTheme } from './theme.js';
+import { getStorageKey, updateTheme } from './theme.js';
 import { buildThemeSelector, buildLanguageSelector, buildNavigation, buildFooter } from './dom-builder.js';
 
 function setSheetOpen(isOpen) {
@@ -200,7 +200,6 @@ export function setupChangelogFilters() {
 }
 
 export function setupThemeChooserEvents() {
-    const THEME_STORAGE_KEY = 'pixel-compass-theme-color';
     const dialog = document.getElementById('theme-dialog');
     const railButton = document.getElementById('theme-rail-button');
     const mobileButton = document.getElementById('theme-picker-button-mobile');
@@ -231,8 +230,8 @@ export function setupThemeChooserEvents() {
         const newColor = themeOption.dataset.color;
         if (!newColor) return;
         
-        localStorage.setItem(THEME_STORAGE_KEY, newColor);
-        
+        localStorage.setItem(getStorageKey(), newColor);
+                
         const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
         updateTheme(isDarkMode);
 
